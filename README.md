@@ -1,12 +1,13 @@
 # C Projects
 
-This repository contains three network programming projects implemented in C, demonstrating different aspects of client-server communication using TCP sockets.
+This repository contains four network programming projects implemented in C, demonstrating different aspects of client-server communication using TCP sockets.
 
 ## Projects Overview
 
 1. **[Banking Queue](#bankingqueue)** - A queue management system that assigns numbers to clients
 2. **[Group Chat](#groupchat)** - A multi-client chat server with real-time message broadcasting
 3. **[Simple Messages](#simplemessages)** - A request-response messaging system between client and server
+4. **[Basic FTP](#basicftp)** - A simple file transfer protocol for sending files from client to server
 
 ---
 
@@ -318,6 +319,88 @@ Enter message: stop
 
 ---
 
+## BasicFTP
+
+A simple file transfer protocol implementation that allows clients to send files to a server over TCP sockets. The client reads a file and transmits its content to the server, which saves it with a modified filename.
+
+### Features
+
+- File name transmission
+- Line-by-line file content transfer
+- EOF signal for transfer completion
+- Automatic file saving on server side
+- Simple one-client-at-a-time architecture
+
+### How It Works
+
+1. Client connects to the server
+2. Client prompts user for file name
+3. Client sends the file name to the server
+4. Client opens the file and reads it line by line
+5. Client sends each line to the server
+6. Client sends "EOF" signal when file transfer is complete
+7. Server receives the file name and creates a new file (appends "1" to the filename)
+8. Server receives and writes file content until "EOF" is received
+9. Server closes the file and connection
+
+### Architecture
+
+- **Server** (`server.c`): Listens on port 4321, receives file name, creates output file, receives and writes file content until EOF
+- **Client** (`client.c`): Connects to server, sends file name, reads local file and sends content line by line, sends EOF signal
+
+### Compilation
+
+```bash
+cd basicFTP
+gcc -o server server.c
+gcc -o client client.c
+```
+
+### Usage
+
+1. Start the server:
+```bash
+./server
+```
+
+2. Run the client (in a separate terminal):
+```bash
+./client
+```
+
+3. When prompted, enter the name of the file you want to send
+4. The file will be transferred and saved on the server with "1" appended to the filename
+
+### Example Session
+
+**Terminal 1 (Server):**
+```
+Server Started.
+Server Bined.
+Server ready.
+Client connected.
+File name received: test
+File opned.
+resiving EOF. 
+files closed. 
+cnx closed. 
+server closed. 
+```
+
+**Terminal 2 (Client):**
+```
+Client Started.
+client connected.
+Enter le nom du fichier à envoyer.
+test
+File sent.
+EOF sent.
+```
+
+The server will create a file named `test1` containing the content from the client's `test` file.
+
+---
+
 ## General Information
 
 ### Requirements
@@ -329,7 +412,7 @@ All projects require:
 
 ### Port Usage
 
-**Note**: All three projects use port **6969** by default. If you want to run multiple projects simultaneously, you'll need to modify the port numbers in the source code.
+**Note**: Most projects use port **6969** by default (BankingQueue, GroupChat, SimpleMessages). BasicFTP uses port **4321**. If you want to run multiple projects simultaneously, you'll need to modify the port numbers in the source code.
 
 ### Common Compilation Issues
 
@@ -350,7 +433,10 @@ c-projects/
 ├── groupChat/
 │   ├── server.c
 │   └── client.c
-└── simpleMessages/
+├── simpleMessages/
+│   ├── server.c
+│   └── client.c
+└── basicFTP/
     ├── server.c
     └── client.c
 ```
